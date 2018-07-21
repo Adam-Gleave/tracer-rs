@@ -1,0 +1,7 @@
+[package]
+name = "tracer-rs"
+version = "0.1.0"
+authors = ["agleave"]
+
+[dependencies]
+coord = "0.11.0"
