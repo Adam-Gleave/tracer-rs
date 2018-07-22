@@ -3,8 +3,10 @@
 #[macro_use] extern crate coord;
 
 mod ray;
+mod scene;
 
 use ray::Ray;
+use scene::Scene;
 use std::fs::File;
 use std::io::Write;
 use coord::prelude::*;
@@ -41,4 +43,13 @@ fn main() -> std::io::Result<()> {
         }
     }
     Ok(())
+}
+
+fn setup_scene() -> Scene {
+    let radius = 0.5;
+    let origin = vec3!(0.0, 0.0, -1.0);
+    let mut scene = Scene::new();
+    scene.add_sphere(radius, origin);
+
+    scene
 }
