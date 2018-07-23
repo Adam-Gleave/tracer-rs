@@ -14,6 +14,15 @@ pub struct Scene {
     pub vertical: Vec3<f32>
 }
 
+impl Default for Sphere {
+    fn default() -> Sphere {
+        Sphere {
+            radius: 0.5,
+            center: vec3!(0.0, 0.0, -1.0)
+        }
+    }
+}
+
 impl Sphere {
     pub fn new(in_radius: f32, in_origin: Vec3<f32>) -> Sphere {
         Sphere {
@@ -33,18 +42,13 @@ impl Sphere {
 
 impl Default for Scene {
     fn default() -> Scene {
-        let mut scene = Scene {
-            spheres: vec![],
+        Scene {
+            spheres: vec![Sphere::default()],
             lower_left: vec3!(-2.0, -1.0, -1.0),
             origin: vec3!(0.0, 0.0, 0.0),
             horizontal: vec3!(4.0, 0.0, 0.0),
             vertical: vec3!(0.0, 2.0, 0.0),
-        };
-
-        let radius = 0.5;
-        let origin = vec3!(0.0, 0.0, -1.0);
-        scene.add_sphere(radius, origin);
-        scene
+        }
     }
 }
 

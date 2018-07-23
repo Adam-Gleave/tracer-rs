@@ -15,25 +15,30 @@ impl Ray {
     }
 
     pub fn colour(&self, scene: &Scene) -> Vec3<f32> {
-        let norm_direction = self.direction.norm();
-        let t = 0.5 * (norm_direction.y + 1.0);
-        let t2 = 1.0 - t;
-
         for sphere in scene.spheres() {
-            if self.collides_with(sphere) {
-                return vec3!(1.0, 0.0, 0.0);
+            let mut t = self.collides_with(sphere);
+
+            if t > 0.0 {
+                let n = (self.at_time(t) - sphere.center()).norm();
+                return vec3!(0.5*(n.x+1.0), 0.5*(n.y+1.0), 0.5*(n.z+1.0));
             }
         }
-        vec3!(1.0*t2, 1.0*t2, 1.0*t2) + vec3!(0.3*t, 0.3*t, 0.3*t)
+        let unit_direction = self.direction.norm();
+        let t = 0.5 * (unit_direction.y + 1.0);
+        vec3!(1.0-t, 1.0-t, 1.0-t) + vec3!(t*0.5, t*0.7, t*1.0)
     }
 
-    pub fn collides_with(&self, sphere: &Sphere) -> bool {
+    pub fn collides_with(&self, sphere: &Sphere) -> f32 {
         let o_c = self.origin() - sphere.center();
         let a = dot(self.direction(), self.direction());
         let b = 2.0 * dot(o_c, self.direction());
         let c = dot(o_c, o_c) - sphere.radius()*sphere.radius();
 
-        b*b - 4.0*a*c > 0.0
+        let discriminant = b*b - 4.0*a*c;
+        if discriminant < 0.0 {
+            return -1.0
+        }
+        ((-b - discriminant.sqrt()) / (2.0*a))
     }
 
     pub fn origin(&self) -> Vec3<f32> {
@@ -42,6 +47,10 @@ impl Ray {
 
     pub fn direction(&self) -> Vec3<f32> {
         self.direction
+    }
+
+    pub fn at_time(&self, t: f32) -> Vec3<f32> {
+        self.origin + vec3!(t*self.direction.x, t*self.direction.y, t*self.direction.z)
     }
 }
 
