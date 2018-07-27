@@ -1,4 +1,5 @@
 use coord::prelude::*;
+use rand::{thread_rng, Rng};
 use scene::{Scene, Sphere};
 
 pub struct Ray {
@@ -56,4 +57,24 @@ impl Ray {
 
 fn dot(a: Vec3<f32>, b: Vec3<f32>) -> f32 {
     a.x*b.x + a.y*b.y + a.z*b.z
+}
+
+fn magnitude(vec: Vec3<f32>) -> f32 {
+    (vec.x.powf(2.0) + vec.y.powf(2.0) + vec.z.powf(2.0)).sqrt()
+}
+
+fn random_in_unit_sphere() -> Vec3<f32> {
+    let mut cont = true;
+    let mut point = Vec3::default();
+
+    while cont {
+        let point = vec3!(thread_rng().gen_range::<f32>(-1.0, 1.0)
+            , thread_rng().gen_range::<f32>(-1.0, 1.0)
+            , thread_rng().gen_range::<f32>(-1.0, 1.0));
+
+        if magnitude(point) < 1.0 {
+            cont = false;
+        }
+    }
+    point
 }
