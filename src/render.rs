@@ -1,6 +1,9 @@
 use ray::Ray;
+use camera::Camera;
 use scene::Scene;
+use SAMPLES;
 use coord::prelude::*;
+use rand::{thread_rng, Rng};
 use std::fs::File;
 use std::io::Write;
 
@@ -34,23 +37,31 @@ impl Renderer {
     }
 
     pub fn render(&self, mut buffer: File, image: Vec2<u16>) -> Result<(),()> {
+        let camera = Camera::default();
+
         match self.scene {
             Some(ref scene) => {
                 for y in (0..image.y - 1).rev() {
                     for x in 0..image.x {
-                        let u = x as f32 / image.x as f32;
-                        let v = y as f32 / image.y as f32;
+                        let mut colour = vec3!(0.0, 0.0, 0.0);
 
-                        let ray_direction = scene.lower_left
-                            + vec3!(u*scene.horizontal.x, u*scene.horizontal.y, u*scene.horizontal.z)
-                            + vec3!(v*scene.vertical.x, v*scene.vertical.y, v*scene.vertical.z);
-                        let ray = Ray::new(scene.origin(), ray_direction);
+                        for s in 0..SAMPLES {
+                            let u_r = thread_rng().gen_range::<f32>(0.0, 1.0);
+                            let v_r = thread_rng().gen_range::<f32>(0.0, 1.0);
+                            let u = (x as f32 + u_r )/ image.x as f32;
+                            let v = (y as f32 + v_r )/ image.y as f32;
 
-                        let ray_colour = ray.colour(&scene);
+                            let ray = camera.ray_at(u, v);
+                            colour = colour + ray.colour(&scene);
+                        }
 
-                        let out_r = (ray_colour.x * 255.99) as u32;
-                        let out_g = (ray_colour.y * 255.99) as u32;
-                        let out_b = (ray_colour.z * 255.99) as u32;
+                        colour = vec3!(colour.x / SAMPLES as f32,
+                            colour.y / SAMPLES as f32,
+                            colour.z / SAMPLES as f32);
+
+                        let out_r = (colour.x * 255.99) as u32;
+                        let out_g = (colour.y * 255.99) as u32;
+                        let out_b = (colour.z * 255.99) as u32;
 
                         write!(buffer, "{} {} {}\n", out_r, out_g, out_b)
                             .expect("Unable to write to file!");

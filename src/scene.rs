@@ -8,10 +8,6 @@ pub struct Sphere {
 
 pub struct Scene {
     spheres: Vec<Sphere>,
-    pub lower_left: Vec3<f32>,
-    pub origin: Vec3<f32>,
-    pub horizontal: Vec3<f32>,
-    pub vertical: Vec3<f32>
 }
 
 impl Default for Sphere {
@@ -43,11 +39,10 @@ impl Sphere {
 impl Default for Scene {
     fn default() -> Scene {
         Scene {
-            spheres: vec![Sphere::default()],
-            lower_left: vec3!(-2.0, -1.0, -1.0),
-            origin: vec3!(0.0, 0.0, 0.0),
-            horizontal: vec3!(4.0, 0.0, 0.0),
-            vertical: vec3!(0.0, 2.0, 0.0),
+            spheres: vec![
+                Sphere::default(),
+                Sphere::new(100.0, vec3!(0.0, -100.5, -1.0))
+            ]
         }
     }
 }
@@ -55,8 +50,7 @@ impl Default for Scene {
 impl Scene {
     pub fn new() -> Scene {
         Scene {
-            spheres: vec![],
-            ..Default::default()
+            spheres: vec![]
         }
     }
 
@@ -66,9 +60,5 @@ impl Scene {
 
     pub fn spheres(&self) -> &Vec<Sphere> {
         &self.spheres
-    }
-
-    pub fn origin(&self) -> Vec3<f32> {
-        self.origin
     }
 }
