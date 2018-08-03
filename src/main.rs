@@ -14,8 +14,9 @@ use render::Renderer;
 use std::fs::File;
 use std::io::Write;
 
-const IMAGE_WIDTH: u16 = 800;
-const IMAGE_HEIGHT: u16 = 400;
+const IMAGE_WIDTH: u16 = 400;
+const IMAGE_HEIGHT: u16 = 200;
+pub const GAMMA: f32 = 1.4;
 pub const SAMPLES: u16 = 100;
 
 fn main() -> std::io::Result<()> {

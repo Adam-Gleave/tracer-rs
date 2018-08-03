@@ -1,6 +1,12 @@
 use coord::prelude::*;
 use std::vec::Vec;
 
+pub struct CollisionRecord {
+    pub t: f32,
+    pub position: Vec3<f32>,
+    pub normal: Vec3<f32>
+}
+
 pub struct Sphere {
     radius: f32,
     center: Vec3<f32>
@@ -8,6 +14,16 @@ pub struct Sphere {
 
 pub struct Scene {
     spheres: Vec<Sphere>,
+}
+
+impl Default for CollisionRecord {
+    fn default() -> CollisionRecord {
+        CollisionRecord {
+            t: 0.0,
+            position: vec3!(0.0, 0.0, 0.0),
+            normal: vec3!(0.0, 0.0, 0.0)
+        }
+    }
 }
 
 impl Default for Sphere {

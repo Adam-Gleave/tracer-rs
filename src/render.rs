@@ -1,7 +1,7 @@
 use ray::Ray;
 use camera::Camera;
 use scene::Scene;
-use SAMPLES;
+use {SAMPLES, GAMMA};
 use coord::prelude::*;
 use rand::{thread_rng, Rng};
 use std::fs::File;
@@ -55,9 +55,11 @@ impl Renderer {
                             colour = colour + ray.colour(&scene);
                         }
 
-                        colour = vec3!(colour.x / SAMPLES as f32,
-                            colour.y / SAMPLES as f32,
-                            colour.z / SAMPLES as f32);
+                        colour = vec3!(
+                            (colour.x / SAMPLES as f32).powf(1.0 / GAMMA),
+                            (colour.y / SAMPLES as f32).powf(1.0 / GAMMA),
+                            (colour.z / SAMPLES as f32).powf(1.0 / GAMMA)
+                        );
 
                         let out_r = (colour.x * 255.99) as u32;
                         let out_g = (colour.y * 255.99) as u32;
